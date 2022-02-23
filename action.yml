@@ -1,0 +1,34 @@
+name: 'Deployment'
+description: 'Deploys Docker container or static website to TFSO environment'
+inputs:
+  deployment_token:
+    description: 'Authorization token that is used to authenticate against the Deployment API'
+    required: true
+  service_name: 
+    description: 'Name of the Rancher service to upgrade, _must_ start with tfso. (match AppVeyor convention)'
+    required: true
+  team:
+    description: 'Name of the team this service belongs to, ie., COLAB'
+    required: true
+  module: 
+    description: 'Name of the module the API or Website is a part of.'
+    required: true
+  type:
+    description: ''
+    required: false
+    default: 'api'
+  version:
+    description: 'Version of the image to upgrade to. Will use tag value if exists and none is entered'
+    required: false
+  environment:
+    description: 'Deployment environment'
+    required: false
+    default: 'beta'
+  release-channel:
+    required: false
+    description: 'Website branches can be release to release channels for easy testing'
+    default: 'false'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
