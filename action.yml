@@ -24,10 +24,10 @@ inputs:
     description: 'Deployment environment'
     required: false
     default: 'Development'
-  httpEndpoint:
+  http-endpoint:
     description: 'The url that resolves to the api'
     required: false
-  containerPort:
+  container-port:
     description: 'The port that is exposed in the container'
     required: false
   environmentVariables:

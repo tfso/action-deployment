@@ -29,8 +29,8 @@ const run = async () => {
   console.log("Type ",type);
   const isReleaseChannel = core.getBooleanInput('release-channel')
   const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
-  const containerPortString = core.getInput('containerPort');
-  const httpEndpoint = core.getInput('httpEndpoint');
+  const containerPortString = core.getInput('container-port');
+  const httpEndpoint = core.getInput('http-endpoint');
   let containerPort : number|undefined = undefined;
   if (containerPortString) containerPort = parseInt(containerPortString)
   const deployParams = {
