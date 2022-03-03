@@ -21,23 +21,26 @@ const getEnvironment = (env: string) => {
 export const deploy = async (authToken: string, deployment: Deployment) => {
   const { rancherEnv, awsBucket } = getEnvironment(deployment.env);
   console.log(`Deploying to Rancher env: ${rancherEnv}`);
+  const params = JSON.stringify({
+    environmentVariables: {
+      rancher_environment: rancherEnv,
+      is_releasechannel: deployment.isReleaseChannel,
+      aws_bucket: awsBucket,
+      ...deployment.environmentVariables
+    },
+    environment: deployment.env,
+    projectName: deployment.serviceName,
+    buildVersion: deployment.version,
+    branchName: deployment.branch,
+    containerPort: deployment.containerPort,
+    httpEndpoint: deployment.httpEndpoint,
+    stackName: deployment.module,
+    team: deployment.team
+  },null,2);  
+  console.log("POST BODY",params);
   const response = await fetch(`${deployment.uri}/${deployment.type}`, {
     method: "POST",
-    body: JSON.stringify({
-      environmentVariables: {
-        rancher_environment: rancherEnv,
-        is_releasechannel: deployment.isReleaseChannel,
-        aws_bucket: awsBucket,
-        ...deployment.environmentVariables
-      },
-      projectName: deployment.serviceName,
-      buildVersion: deployment.version,
-      branchName: deployment.branch,
-      containerPort: deployment.containerPort,
-      httpEndpoint: deployment.httpEndpoint,
-      stackName: deployment.module,
-      team: deployment.team
-    }),
+    body: params,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${authToken}`,
