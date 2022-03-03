@@ -24,14 +24,16 @@ const run = async () => {
     process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
   const version =
     core.getInput("version") || context.ref.replace("refs/tags/", "");
+  console.log("Using url ",deploymentUri);
   const type = getDeploymentType(core.getInput("type"));
+  console.log("Type ",type);
   const isReleaseChannel = core.getBooleanInput('release-channel')
   const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
   const containerPortString = core.getInput('containerPort');
   const httpEndpoint = core.getInput('httpEndpoint');
   let containerPort : number|undefined = undefined;
   if (containerPortString) containerPort = parseInt(containerPortString)
-  await deploy(token, {
+  const deployParams = {
     env,
     serviceName,
     version,    
@@ -44,7 +46,9 @@ const run = async () => {
     httpEndpoint: httpEndpoint,
     module: core.getInput('module'),
     team: core.getInput('team'),
-  });
+  };
+  console.log(JSON.stringify(deployParams));
+  await deploy(token, deployParams);
 };
 
 run();
