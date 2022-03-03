@@ -34,7 +34,7 @@ const run = async () => {
   await deploy(token, {
     env,
     serviceName,
-    version,
+    version,    
     type,
     uri: deploymentUri,
     isReleaseChannel: isReleaseChannel ?? false,
@@ -43,7 +43,7 @@ const run = async () => {
     containerPort: containerPort,
     httpEndpoint: httpEndpoint,
     module: core.getInput('module'),
-    team: core.getInput('team')
+    team: core.getInput('team'),
   });
 };
 
