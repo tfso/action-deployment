@@ -6,9 +6,12 @@ const getDeploymentType = (type: string): string => {
   switch (type) {
     case "website":
       return "v2/staticsite";
+    case "rancher2":
+      return "container-upgradev3";  
     case "api":
     default:
       return "container-upgrade";
+    
   }
 };
 
@@ -23,7 +26,11 @@ const run = async () => {
     core.getInput("version") || context.ref.replace("refs/tags/", "");
   const type = getDeploymentType(core.getInput("type"));
   const isReleaseChannel = core.getBooleanInput('release-channel')
-
+  const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
+  const containerPortString = core.getInput('containerPort');
+  const httpEndpoint = core.getInput('httpEndpoint');
+  let containerPort : number|undefined = undefined;
+  if (containerPortString) containerPort = parseInt(containerPortString)
   await deploy(token, {
     env,
     serviceName,
@@ -31,7 +38,12 @@ const run = async () => {
     type,
     uri: deploymentUri,
     isReleaseChannel: isReleaseChannel ?? false,
-    branch
+    branch,
+    environmentVariables: envVariables,
+    containerPort: containerPort,
+    httpEndpoint: httpEndpoint,
+    module: core.getInput('module'),
+    team: core.getInput('team')
   });
 };
 

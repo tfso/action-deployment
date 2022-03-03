@@ -6,4 +6,9 @@ export type Deployment = {
     uri: string
     isReleaseChannel: boolean
     branch?: string
+    environmentVariables: {[name:string]:string}
+    containerPort?: number
+    httpEndpoint?: string
+    module: string,
+    team: string
 }

@@ -27,11 +27,16 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       environmentVariables: {
         rancher_environment: rancherEnv,
         is_releasechannel: deployment.isReleaseChannel,
-        aws_bucket: awsBucket
+        aws_bucket: awsBucket,
+        ...deployment.environmentVariables
       },
       projectName: deployment.serviceName,
       buildVersion: deployment.version,
-      branchName: deployment.branch
+      branchName: deployment.branch,
+      containerPort: deployment.containerPort,
+      httpEndpoint: deployment.httpEndpoint,
+      stackName: deployment.module,
+      team: deployment.team
     }),
     headers: {
       "Content-Type": "application/json",
