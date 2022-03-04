@@ -32,7 +32,7 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       projectName: deployment.serviceName,
       buildVersion: deployment.version,
       branchName: deployment.branch,
-      imageName: deployment.image
+      imageName: deployment.imageName || undefined
     }),
     headers: {
       "Content-Type": "application/json",
