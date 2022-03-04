@@ -6,4 +6,5 @@ export type Deployment = {
     uri: string
     isReleaseChannel: boolean
     branch?: string
+    image?: string
 }
