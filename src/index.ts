@@ -1,4 +1,4 @@
-import core = require("@actions/core")
+import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy } from "./apiService";
 
@@ -16,13 +16,16 @@ const run = async () => {
   const token = core.getInput("deployment_token");
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
-  const branch = context.ref.replace("refs/heads/", "") || context.ref.replace("refs/tags/", "");
-  const deploymentUri =
-    process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  const imageName = core.getInput("image_name");
   const version =
     core.getInput("version") || context.ref.replace("refs/tags/", "");
+  const branch =
+    context.ref.replace("refs/heads/", "") ||
+    context.ref.replace("refs/tags/", "");
+  const deploymentUri =
+    process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
   const type = getDeploymentType(core.getInput("type"));
-  const isReleaseChannel = core.getBooleanInput('release-channel')
+  const isReleaseChannel = core.getBooleanInput("release-channel");
 
   await deploy(token, {
     env,
@@ -31,7 +34,8 @@ const run = async () => {
     type,
     uri: deploymentUri,
     isReleaseChannel: isReleaseChannel ?? false,
-    branch
+    branch,
+    imageName,
   });
 };
 

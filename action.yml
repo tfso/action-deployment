@@ -1,6 +1,9 @@
 name: 'Deployment'
 description: 'Deploys Docker container or static website to TFSO environment'
 inputs:
+  image_name:
+    required: false
+    description: 'Specify explicit image name instead of using service name'
   deployment_token:
     description: 'Authorization token that is used to authenticate against the Deployment API'
     required: true
