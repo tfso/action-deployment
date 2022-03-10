@@ -31,6 +31,9 @@ const run = async () => {
   const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
   const containerPortString = core.getInput('container-port');
   const httpEndpoint = core.getInput('http-endpoint');
+  const readyTestPath = core.getInput('readytest-path')
+  const healthTestPath = core.getInput('healthtest-path')
+
   let containerPort : number|undefined = undefined;
   if (containerPortString) containerPort = parseInt(containerPortString)
   const deployParams = {
@@ -46,6 +49,10 @@ const run = async () => {
     httpEndpoint: httpEndpoint,
     module: core.getInput('module'),
     team: core.getInput('team'),
+    readyTestPath: readyTestPath,
+    healthTestPath: healthTestPath,
+    dd_service: core.getInput('dd-service')
+
   };
   console.log(JSON.stringify(deployParams));
   await deploy(token, deployParams);

@@ -40,7 +40,19 @@ inputs:
   release-channel:
     required: false
     description: 'Website branches can be release to release channels for easy testing'
-    default: 'false'    
+    default: 'false'   
+  readytest-path:
+    required: false
+    description: 'Path to ready test for container'
+    default: '/ready'
+  healthtest-path:
+    required: false
+    description: 'Path to health test for container'
+    default: '/health'
+  dd-service:
+    required: true
+    description: 'Alternative name for the service - should correspond with the name used in datadog'
+
 
 runs:
   using: 'node16'
