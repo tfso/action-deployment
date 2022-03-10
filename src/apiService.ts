@@ -35,7 +35,10 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     containerPort: deployment.containerPort,
     httpEndpoint: deployment.httpEndpoint,
     stackName: deployment.module,
-    team: deployment.team
+    team: deployment.team,
+    dd_service: deployment.dd_service,
+    readyTestPath: deployment.readyTestPath,
+    healthTestPath: deployment.healthTestPath
   },null,2);  
   console.log("POST BODY",params);
   const response = await fetch(`${deployment.uri}/${deployment.type}`, {

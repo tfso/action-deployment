@@ -11,4 +11,7 @@ export type Deployment = {
     httpEndpoint?: string
     module: string,
     team: string
+    dd_service: string
+    readyTestPath: string
+    healthTestPath: string
 }
