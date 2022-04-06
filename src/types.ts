@@ -14,4 +14,5 @@ export type Deployment = {
     dd_service: string
     readyTestPath: string
     healthTestPath: string
+    instances: number
 }

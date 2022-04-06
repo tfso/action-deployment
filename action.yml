@@ -52,6 +52,9 @@ inputs:
   dd-service:
     required: true
     description: 'Alternative name for the service - should correspond with the name used in datadog'
+  instances:
+    required: false
+    description: 'Number of instances to start by default'
 
 
 runs:

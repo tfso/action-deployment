@@ -51,7 +51,8 @@ const run = async () => {
     team: core.getInput('team'),
     readyTestPath: readyTestPath,
     healthTestPath: healthTestPath,
-    dd_service: core.getInput('dd-service')
+    dd_service: core.getInput('dd-service'),
+    instances: parseInt(core.getInput('instances'))
 
   };
   console.log(JSON.stringify(deployParams));
