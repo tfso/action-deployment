@@ -1,4 +1,4 @@
-import core = require("@actions/core")
+import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy } from "./apiService";
 
@@ -19,12 +19,9 @@ const run = async () => {
   const token = core.getInput("deployment_token");
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
-  const branch = context.ref.replace("refs/heads/", "") || context.ref.replace("refs/tags/", "");
-  const deploymentUri =
-    process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  const imageName = core.getInput("image_name");
   const version =
     core.getInput("version") || context.ref.replace("refs/tags/", "");
-  console.log("Using url ",deploymentUri);
   const type = getDeploymentType(core.getInput("type"));
   console.log("Type ",type);
   const isReleaseChannel = core.getBooleanInput('release-channel')
@@ -33,6 +30,12 @@ const run = async () => {
   const httpEndpoint = core.getInput('http-endpoint');
   const readyTestPath = core.getInput('readytest-path')
   const healthTestPath = core.getInput('healthtest-path')
+  const branch =
+    context.ref.replace("refs/heads/", "") ||
+    context.ref.replace("refs/tags/", "");
+  const deploymentUri =
+    process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  console.log("Using url ",deploymentUri);
 
   let containerPort : number|undefined = undefined;
   if (containerPortString) containerPort = parseInt(containerPortString)
@@ -52,7 +55,8 @@ const run = async () => {
     readyTestPath: readyTestPath,
     healthTestPath: healthTestPath,
     dd_service: core.getInput('dd-service'),
-    instances: parseInt(core.getInput('instances'))
+    instances: parseInt(core.getInput('instances')),
+    imageName
 
   };
   console.log(JSON.stringify(deployParams));

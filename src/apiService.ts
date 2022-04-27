@@ -39,7 +39,8 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     dd_service: deployment.dd_service,
     readyTestPath: deployment.readyTestPath,
     healthTestPath: deployment.healthTestPath,
-    instances: deployment.instances
+    instances: deployment.instances,
+    imageName: deployment.imageName
   },null,2);  
   console.log("POST BODY",params);
   const response = await fetch(`${deployment.uri}/${deployment.type}`, {
