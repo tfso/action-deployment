@@ -7667,22 +7667,30 @@ var getEnvironment = (env) => {
 var deploy = (authToken, deployment) => __async(void 0, null, function* () {
   const { rancherEnv, awsBucket } = getEnvironment(deployment.env);
   console.log(`Deploying to Rancher env: ${rancherEnv}`);
+  const params = JSON.stringify({
+    environmentVariables: __spreadValues({
+      rancher_environment: rancherEnv,
+      is_releasechannel: deployment.isReleaseChannel,
+      aws_bucket: awsBucket
+    }, deployment.environmentVariables),
+    environment: deployment.env,
+    projectName: deployment.serviceName,
+    buildVersion: deployment.version,
+    branchName: deployment.branch,
+    containerPort: deployment.containerPort,
+    httpEndpoint: deployment.httpEndpoint,
+    stackName: deployment.module,
+    team: deployment.team,
+    dd_service: deployment.dd_service,
+    readyTestPath: deployment.readyTestPath,
+    healthTestPath: deployment.healthTestPath,
+    instances: deployment.instances,
+    imageName: deployment.imageName
+  }, null, 2);
+  console.log("POST BODY", params);
   const response = yield fetch(`${deployment.uri}/${deployment.type}`, {
     method: "POST",
-    body: JSON.stringify({
-      environmentVariables: __spreadValues({
-        rancher_environment: rancherEnv,
-        is_releasechannel: deployment.isReleaseChannel,
-        aws_bucket: awsBucket
-      }, deployment.environmentVariables),
-      projectName: deployment.serviceName,
-      buildVersion: deployment.version,
-      branchName: deployment.branch,
-      containerPort: deployment.containerPort,
-      httpEndpoint: deployment.httpEndpoint,
-      stackName: deployment.module,
-      team: deployment.team
-    }),
+    body: params,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${authToken}`
@@ -7717,21 +7725,26 @@ var run = () => __async(exports, null, function* () {
   const token = core.getInput("deployment_token");
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
-  const branch = import_github.context.ref.replace("refs/heads/", "") || import_github.context.ref.replace("refs/tags/", "");
-  const deploymentUri = process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  const imageName = core.getInput("image_name");
   const version = core.getInput("version") || import_github.context.ref.replace("refs/tags/", "");
   const type = getDeploymentType(core.getInput("type"));
+  console.log("Type ", type);
   const isReleaseChannel = core.getBooleanInput("release-channel");
   const envVariables = Object.keys(process.env || {}).filter((x) => x.indexOf("TFSO_") == 0).reduce((prev, cur) => {
     prev[cur.replace("TFSO_", "")] = process.env[cur];
     return prev;
   }, {});
-  const containerPortString = core.getInput("containerPort");
-  const httpEndpoint = core.getInput("httpEndpoint");
+  const containerPortString = core.getInput("container-port");
+  const httpEndpoint = core.getInput("http-endpoint");
+  const readyTestPath = core.getInput("readytest-path");
+  const healthTestPath = core.getInput("healthtest-path");
+  const branch = import_github.context.ref.replace("refs/heads/", "") || import_github.context.ref.replace("refs/tags/", "");
+  const deploymentUri = process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  console.log("Using url ", deploymentUri);
   let containerPort = void 0;
   if (containerPortString)
     containerPort = parseInt(containerPortString);
-  yield deploy(token, {
+  const deployParams = {
     env,
     serviceName,
     version,
@@ -7743,8 +7756,15 @@ var run = () => __async(exports, null, function* () {
     containerPort,
     httpEndpoint,
     module: core.getInput("module"),
-    team: core.getInput("team")
-  });
+    team: core.getInput("team"),
+    readyTestPath,
+    healthTestPath,
+    dd_service: core.getInput("dd-service"),
+    instances: parseInt(core.getInput("instances")),
+    imageName
+  };
+  console.log(JSON.stringify(deployParams));
+  yield deploy(token, deployParams);
 });
 run();
 /*!
