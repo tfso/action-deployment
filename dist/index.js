@@ -7664,25 +7664,47 @@ var getEnvironment = (env) => {
       };
   }
 };
+var checkStatus = (authToken, location) => __async(void 0, null, function* () {
+  const response = yield fetch(location, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authToken}`
+    }
+  });
+  if (response.status >= 200 && response.status <= 299) {
+    const resJson = yield response.json();
+    return resJson.status;
+  } else {
+    throw "Deployment not found!";
+  }
+});
 var deploy = (authToken, deployment) => __async(void 0, null, function* () {
   const { rancherEnv, awsBucket } = getEnvironment(deployment.env);
   console.log(`Deploying to Rancher env: ${rancherEnv}`);
+  const params = JSON.stringify({
+    environmentVariables: __spreadValues({
+      rancher_environment: rancherEnv,
+      is_releasechannel: deployment.isReleaseChannel,
+      aws_bucket: awsBucket
+    }, deployment.environmentVariables),
+    environment: deployment.env,
+    projectName: deployment.serviceName,
+    buildVersion: deployment.version,
+    branchName: deployment.branch,
+    containerPort: deployment.containerPort,
+    httpEndpoint: deployment.httpEndpoint,
+    stackName: deployment.module,
+    team: deployment.team,
+    dd_service: deployment.dd_service,
+    readyTestPath: deployment.readyTestPath,
+    healthTestPath: deployment.healthTestPath,
+    instances: deployment.instances,
+    imageName: deployment.imageName
+  }, null, 2);
+  console.log("POST BODY", params);
   const response = yield fetch(`${deployment.uri}/${deployment.type}`, {
     method: "POST",
-    body: JSON.stringify({
-      environmentVariables: __spreadValues({
-        rancher_environment: rancherEnv,
-        is_releasechannel: deployment.isReleaseChannel,
-        aws_bucket: awsBucket
-      }, deployment.environmentVariables),
-      projectName: deployment.serviceName,
-      buildVersion: deployment.version,
-      branchName: deployment.branch,
-      containerPort: deployment.containerPort,
-      httpEndpoint: deployment.httpEndpoint,
-      stackName: deployment.module,
-      team: deployment.team
-    }),
+    body: params,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${authToken}`
@@ -7691,9 +7713,11 @@ var deploy = (authToken, deployment) => __async(void 0, null, function* () {
   if (response.status === 504) {
     console.warn("Rancher timed out, this is normal when there are more than 2 containers");
     return;
-  } else if (response.status === 200) {
+  } else if (response.status >= 200 && response.status <= 299) {
     console.log("Deployment successful!");
-    return;
+    console.log("Headers returned : ", response.headers);
+    console.log("Status was", response.headers);
+    return response.headers.get("location");
   } else {
     console.log(response);
     throw `Deployment failed - statusCode: ${response.status} - ${response.message}`;
@@ -7713,25 +7737,31 @@ var getDeploymentType = (type) => {
       return "container-upgrade";
   }
 };
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var run = () => __async(exports, null, function* () {
   const token = core.getInput("deployment_token");
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
-  const branch = import_github.context.ref.replace("refs/heads/", "") || import_github.context.ref.replace("refs/tags/", "");
-  const deploymentUri = process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  const imageName = core.getInput("image_name");
   const version = core.getInput("version") || import_github.context.ref.replace("refs/tags/", "");
   const type = getDeploymentType(core.getInput("type"));
+  console.log("Type ", type);
   const isReleaseChannel = core.getBooleanInput("release-channel");
-  const envVariables = Object.keys(process.env || {}).filter((x) => x.indexOf("TFSO_") == 0).reduce((prev, cur) => {
+  const envVariables = Object.keys(process.env || {}).filter((x2) => x2.indexOf("TFSO_") == 0).reduce((prev, cur) => {
     prev[cur.replace("TFSO_", "")] = process.env[cur];
     return prev;
   }, {});
-  const containerPortString = core.getInput("containerPort");
-  const httpEndpoint = core.getInput("httpEndpoint");
+  const containerPortString = core.getInput("container-port");
+  const httpEndpoint = core.getInput("http-endpoint");
+  const readyTestPath = core.getInput("readytest-path");
+  const healthTestPath = core.getInput("healthtest-path");
+  const branch = import_github.context.ref.replace("refs/heads/", "") || import_github.context.ref.replace("refs/tags/", "");
+  const deploymentUri = process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  console.log("Using url ", deploymentUri);
   let containerPort = void 0;
   if (containerPortString)
     containerPort = parseInt(containerPortString);
-  yield deploy(token, {
+  const deployParams = {
     env,
     serviceName,
     version,
@@ -7743,8 +7773,30 @@ var run = () => __async(exports, null, function* () {
     containerPort,
     httpEndpoint,
     module: core.getInput("module"),
-    team: core.getInput("team")
-  });
+    team: core.getInput("team"),
+    readyTestPath,
+    healthTestPath,
+    dd_service: core.getInput("dd-service"),
+    instances: parseInt(core.getInput("instances")),
+    imageName
+  };
+  console.log(JSON.stringify(deployParams));
+  var location = yield deploy(token, deployParams);
+  if (!location) {
+    console.log("No location returned.  Assume the deployment is ok!");
+    return;
+  }
+  console.log("Checking location ", location, " for latest status on deployment");
+  for (var x = 0; x < 15; x++) {
+    console.log("Waiting ", x, "seconds - and then testing status");
+    yield sleep((x + 1) * 1e3);
+    const status = yield checkStatus(token, location);
+    console.log("Status is ", status);
+    if (status == "active") {
+      console.log("Deployment is ACTIVE!");
+      return;
+    }
+  }
 });
 run();
 /*!
