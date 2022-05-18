@@ -76,6 +76,9 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     return;
   } else if (response.status >= 200 && response.status<=299) {
     console.log("Deployment successful!");
+    console.log("Headers returned : ",response.headers);
+    console.log("Status was", response.headers);
+
     return response.headers.location;
   } else {
     console.log(response);
