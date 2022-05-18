@@ -79,7 +79,7 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     console.log("Headers returned : ",response.headers);
     console.log("Status was", response.headers);
 
-    return response.headers.location;
+    return response.headers.get('location');
   } else {
     console.log(response);
     throw `Deployment failed - statusCode: ${response.status} - ${response.message}`;
