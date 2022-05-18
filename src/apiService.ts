@@ -18,6 +18,23 @@ const getEnvironment = (env: string) => {
   }
 };
 
+export const checkStatus = async (authToken:string, location: string) => {
+  const response = await fetch(location, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    }});
+    
+    if (response.status>=200 && response.status<=299) {
+      const resJson = await response.json();
+      return resJson.status;
+    }
+    else {
+      throw "Deployment not found!";
+    }
+
+}
+
 export const deploy = async (authToken: string, deployment: Deployment) => {
   const { rancherEnv, awsBucket } = getEnvironment(deployment.env);
   console.log(`Deploying to Rancher env: ${rancherEnv}`);
@@ -57,9 +74,9 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       "Rancher timed out, this is normal when there are more than 2 containers"
     );
     return;
-  } else if (response.status === 200) {
+  } else if (response.status >= 200 && response.status<=299) {
     console.log("Deployment successful!");
-    return;
+    return response.headers.location;
   } else {
     console.log(response);
     throw `Deployment failed - statusCode: ${response.status} - ${response.message}`;

@@ -1,6 +1,6 @@
 import core = require("@actions/core");
 import { context } from "@actions/github";
-import { deploy } from "./apiService";
+import { deploy, checkStatus} from "./apiService";
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -14,6 +14,10 @@ const getDeploymentType = (type: string): string => {
     
   }
 };
+
+const sleep = (ms:number) =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
 
 const run = async () => {
   const token = core.getInput("deployment_token");
@@ -60,7 +64,23 @@ const run = async () => {
 
   };
   console.log(JSON.stringify(deployParams));
-  await deploy(token, deployParams);
+  var location = await deploy(token, deployParams);
+  if (!location) {
+    console.log("No location returned.  Assume the deployment is ok!");
+    return;
+  }
+  console.log("Checking location ",location," for latest status on deployment");
+  for (var x=0;x<15;x++) {
+    console.log("Waiting ",x,"seconds - and then testing status");
+    await sleep((x+1)*1000);
+    const status = await checkStatus(token,location);
+    console.log("Status is ",status);
+    if (status=="active") {
+      console.log("Deployment is ACTIVE!")
+      return;
+    }
+  }
+
 };
 
 run();
