@@ -1,3 +1,10 @@
+export type ProbeConfig = {
+    path: string
+    periodSeconds?: number
+    initialDelaySeconds?: number
+    timeoutSeconds?: number
+}
+
 export type Deployment = {
     env: string
     serviceName: string

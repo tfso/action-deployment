@@ -54,8 +54,8 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     stackName: deployment.module,
     team: deployment.team,
     dd_service: deployment.dd_service,
-    readyTestPath: deployment.readyTestPath,
-    healthTestPath: deployment.healthTestPath,
+    readinessProbe: deployment.readinessProbe,
+    livenessProbe: deployment.livenessProbe,
     instances: deployment.instances,
     imageName: deployment.imageName
   },null,2);  
