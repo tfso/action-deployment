@@ -3,7 +3,7 @@ export type ProbeConfig = {
     periodSeconds?: number
     initialDelaySeconds?: number
     timeoutSeconds?: number
-    command?: string
+    command?: string[]
 }
 
 export type Deployment = {

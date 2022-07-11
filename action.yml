@@ -63,10 +63,10 @@ inputs:
     default: '/ready'
   readytest-command:
     required: false
-    description: 'Command that will be run - test if commands exit with exit code 0 '
+    description: 'Commands that will be run - test if commands exit with exit code 0 '
   healthtest-command:
     required: false
-    description: 'Command that will be run - test if commands exit with exit code 0 '
+    description: 'Commands that will be run - test if commands exit with exit code 0 '
 
   readytest-initialdelay:
     required: false

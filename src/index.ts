@@ -25,7 +25,7 @@ const getProbeConfiguration = (core:any, probeType: string): ProbeConfig => {
   const timeout = core.getInput(`${probeType}-timeout`)
   return {
     path: core.getInput(`${probeType}-path`) || undefined,
-    command: core.getInput(`${probeType}-command`) || undefined,
+    command: core.getInput(`${probeType}-command`) ? [core.getInput(`${probeType}-command`)] : undefined,
     periodSeconds: period ? parseInt(period) : undefined,
     initialDelaySeconds: initialdelay ? parseInt(initialdelay) : undefined,
     timeoutSeconds: timeout ? parseInt(timeout) : undefined
