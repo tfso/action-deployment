@@ -34,6 +34,9 @@ const run = async () => {
   const httpEndpoint = core.getInput('http-endpoint');
   const readyTestPath = core.getInput('readytest-path')
   const healthTestPath = core.getInput('healthtest-path')
+  const readyTestCommand = core.getInput('readytest-command')
+  const healthTestCommand = core.getInput('healthtest-command')
+
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
@@ -58,6 +61,8 @@ const run = async () => {
     team: core.getInput('team'),
     readyTestPath: readyTestPath,
     healthTestPath: healthTestPath,
+    readyTestCommand: readyTestCommand,
+    healthTestCommand: healthTestCommand,
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
     imageName

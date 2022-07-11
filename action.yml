@@ -52,6 +52,13 @@ inputs:
     required: false
     description: 'Path to health test for container'
     default: '/health'
+  readytest-command:
+    required: false
+    description: 'Command that will be run - test if commands exit with exit code 0 '
+  healthtest-command:
+    required: false
+    description: 'Command that will be run - test if commands exit with exit code 0 '
+
   dd-service:
     required: true
     description: 'Alternative name for the service - should correspond with the name used in datadog'
