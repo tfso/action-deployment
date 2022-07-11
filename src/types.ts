@@ -1,3 +1,11 @@
+export type ProbeConfig = {
+    path?: string
+    periodSeconds?: number
+    initialDelaySeconds?: number
+    timeoutSeconds?: number
+    command?: string
+}
+
 export type Deployment = {
     env: string
     serviceName: string
@@ -8,8 +16,8 @@ export type Deployment = {
     branch?: string
     imageName?: string,
     instances: number
-    healthTestPath: string
-    readyTestPath: string
+    readinessProbe: ProbeConfig,
+    livenessProbe: ProbeConfig,
     dd_service: string
     team: string
     module: string

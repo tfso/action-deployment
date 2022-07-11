@@ -1,6 +1,7 @@
 import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy, checkStatus} from "./apiService";
+import { ProbeConfig } from './types'
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -18,6 +19,18 @@ const getDeploymentType = (type: string): string => {
 const sleep = (ms:number) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
+const getProbeConfiguration = (core:any, probeType: string): ProbeConfig => {
+  const period = core.getInput(`${probeType}-period`)
+  const initialdelay = core.getInput(`${probeType}-initialdelay`)
+  const timeout = core.getInput(`${probeType}-timeout`)
+  return {
+    path: core.getInput(`${probeType}-path`) || undefined,
+    command: core.getInput(`${probeType}-command`) || undefined,
+    periodSeconds: period ? parseInt(period) : undefined,
+    initialDelaySeconds: initialdelay ? parseInt(initialdelay) : undefined,
+    timeoutSeconds: timeout ? parseInt(timeout) : undefined
+  }
+}
 
 const run = async () => {
   const token = core.getInput("deployment_token");
@@ -32,11 +45,8 @@ const run = async () => {
   const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
   const containerPortString = core.getInput('container-port');
   const httpEndpoint = core.getInput('http-endpoint');
-  const readyTestPath = core.getInput('readytest-path')
-  const healthTestPath = core.getInput('healthtest-path')
-  const readyTestCommand = core.getInput('readytest-command')
-  const healthTestCommand = core.getInput('healthtest-command')
-
+  const readinessProbe = getProbeConfiguration(core, 'readytest')
+  const livenessProbe = getProbeConfiguration(core, 'healthtest')
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
@@ -59,10 +69,8 @@ const run = async () => {
     httpEndpoint: httpEndpoint,
     module: core.getInput('module'),
     team: core.getInput('team'),
-    readyTestPath: readyTestPath,
-    healthTestPath: healthTestPath,
-    readyTestCommand: readyTestCommand,
-    healthTestCommand: healthTestCommand,
+    readinessProbe,
+    livenessProbe,
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
     imageName

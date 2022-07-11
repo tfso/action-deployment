@@ -43,15 +43,24 @@ inputs:
   release-channel:
     required: false
     description: 'Website branches can be release to release channels for easy testing'
-    default: 'false'   
-  readytest-path:
-    required: false
-    description: 'Path to ready test for container'
-    default: '/ready'
+    default: 'false'
   healthtest-path:
     required: false
     description: 'Path to health test for container'
     default: '/health'
+  healthtest-timeout:
+    required: false
+    description: 'Timeout after failing test - in seconds'
+  healthtest-initialdelay:
+    required: false
+    description: 'Delay in seconds before initial readiness probing'
+  healthtest-period:
+    required: false
+    description: 'Time in seconds between each test'
+  readytest-path:
+    required: false
+    description: 'Path to ready test for container'
+    default: '/ready'
   readytest-command:
     required: false
     description: 'Command that will be run - test if commands exit with exit code 0 '
@@ -59,14 +68,18 @@ inputs:
     required: false
     description: 'Command that will be run - test if commands exit with exit code 0 '
 
+  readytest-initialdelay:
+    required: false
+    description: 'Delay in seconds before initial readiness probing'
+  readytest-period:
+    required: false
+    description: 'Time in seconds between each test'
   dd-service:
     required: true
     description: 'Alternative name for the service - should correspond with the name used in datadog'
   instances:
     required: false
     description: 'Number of instances to start by default'
-
-
 runs:
   using: 'node16'
   main: 'dist/index.js'
