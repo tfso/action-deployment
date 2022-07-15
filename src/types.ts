@@ -24,4 +24,5 @@ export type Deployment = {
     httpEndpoint: string
     containerPort: number
     environmentVariables: {[name:string]:string}
+    deployerName: string
 }

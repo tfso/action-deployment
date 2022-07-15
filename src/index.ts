@@ -37,6 +37,7 @@ const run = async () => {
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
   const imageName = core.getInput("image_name");
+  const deployerName = context.actor
   const version =
     core.getInput("version") || context.ref.replace("refs/tags/", "");
   const type = getDeploymentType(core.getInput("type"));
@@ -73,7 +74,8 @@ const run = async () => {
     livenessProbe,
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
-    imageName
+    imageName,
+    deployerName: deployerName
 
   };
   console.log(JSON.stringify(deployParams));
