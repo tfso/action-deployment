@@ -29,6 +29,6 @@ jobs:
       # See documentation: https://github.com/JasonEtco/build-and-tag-action
       - uses: JasonEtco/build-and-tag-action@v2
         with:
-          tag_name: v1.0-rancher2
+          tag_name: v1.0.2-rancher2
         env:
           GITHUB_TOKEN: ${{ github.token }}
