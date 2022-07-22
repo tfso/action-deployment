@@ -33,6 +33,7 @@ const getProbeConfiguration = (core:any, probeType: string): ProbeConfig => {
 }
 
 const run = async () => {
+  console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
   const env = core.getInput("environment");
   const serviceName = core.getInput("service_name");
