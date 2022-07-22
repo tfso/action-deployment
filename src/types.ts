@@ -1,3 +1,11 @@
+export type ProbeConfig = {
+    path?: string
+    periodSeconds?: number
+    initialDelaySeconds?: number
+    timeoutSeconds?: number
+    command?: string[]
+}
+
 export type Deployment = {
     env: string
     serviceName: string
@@ -6,5 +14,15 @@ export type Deployment = {
     uri: string
     isReleaseChannel: boolean
     branch?: string
-    imageName?: string
+    imageName?: string,
+    instances: number
+    readinessProbe: ProbeConfig,
+    livenessProbe: ProbeConfig,
+    dd_service: string
+    team: string
+    module: string
+    httpEndpoint: string
+    containerPort: number
+    environmentVariables: {[name:string]:string}
+    deployerName: string
 }
