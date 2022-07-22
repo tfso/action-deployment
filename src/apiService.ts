@@ -9,6 +9,11 @@ const getEnvironment = (env: string) => {
         rancherEnv: "RancherProd",
         awsBucket: "frontendfiles-prod.web.s3.24sevenoffice.com"
       };
+    case "test":
+      return {
+        rancherEnv: "RancherLinuxTest",
+        awsBucket: "frontendfiles-test.web.s3.24sevenoffice.com"
+      };
     case "beta":
     default:
       return {
