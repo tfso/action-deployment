@@ -89,6 +89,6 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
   } else {
     const responseText = await response.text();
     console.log(`Data sent was : ${JSON.stringify(params)}`);
-    throw `Deployment failed - statusCode: ${response.status} - ${responseText}`;
+    throw `Deployment failed - statusCode: ${response.status} - ${responseText} - ${response.message}`;
   }
 };
