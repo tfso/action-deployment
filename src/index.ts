@@ -96,6 +96,7 @@ const run = async () => {
       return;
     }
   }
+  throw "Error : Deployment was not set to active within set period.";
 
 };
 

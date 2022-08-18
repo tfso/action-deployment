@@ -33,13 +33,6 @@ inputs:
   container-port:
     description: 'The port that is exposed in the container'
     required: false
-  environmentVariables:
-    description: 'Default environment variables to be set in the container.  No secrets here!'
-    required: false
-  rancherVersion:
-    description: 'Set this to v2 to deploy to rancher2'
-    required: false
-    default: 'v2'  
   release-channel:
     required: false
     description: 'Website branches can be release to release channels for easy testing'
