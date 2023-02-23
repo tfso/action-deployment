@@ -49,6 +49,7 @@ const run = async () => {
   const httpEndpoint = core.getInput('http-endpoint');
   const readinessProbe = getProbeConfiguration(core, 'readytest')
   const livenessProbe = getProbeConfiguration(core, 'healthtest')
+  const bufferSize = core.getInput('buffer-size');
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
@@ -76,7 +77,8 @@ const run = async () => {
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
     imageName,
-    deployerName: deployerName
+    deployerName: deployerName,
+    bufferSize: bufferSize
 
   };
   console.log(JSON.stringify(deployParams));

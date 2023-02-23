@@ -25,4 +25,5 @@ export type Deployment = {
     containerPort: number
     environmentVariables: {[name:string]:string}
     deployerName: string
+    bufferSize: string
 }
