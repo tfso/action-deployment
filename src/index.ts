@@ -49,7 +49,7 @@ const run = async () => {
   const httpEndpoint = core.getInput('http-endpoint');
   const readinessProbe = getProbeConfiguration(core, 'readytest')
   const livenessProbe = getProbeConfiguration(core, 'healthtest')
-  const bufferSize = core.getInput('buffer-size');
+  const bufferSize = core.getInput('proxy-buffer-size');
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
