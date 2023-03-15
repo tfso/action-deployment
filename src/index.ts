@@ -1,7 +1,7 @@
 import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy, checkStatus} from "./apiService";
-import { ProbeConfig } from './types'
+import { ProbeConfig, VolumeConfig, VolumeMountConfig } from './types'
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -32,6 +32,19 @@ const getProbeConfiguration = (core:any, probeType: string): ProbeConfig => {
   }
 }
 
+const getVolumeConfig = (volumesInput: any[], volumeType: string): VolumeConfig[] => {
+  return volumesInput
+    .map(v => JSON.parse(v))
+    .map(v => ({
+      name: v.name,
+      volume: {
+        readOnly: v.readOnly,
+        volumeType: volumeType,
+        claimName: v.claimName
+      }
+    }) as VolumeConfig)
+}
+
 const run = async () => {
   console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
@@ -49,6 +62,8 @@ const run = async () => {
   const httpEndpoint = core.getInput('http-endpoint');
   const readinessProbe = getProbeConfiguration(core, 'readytest')
   const livenessProbe = getProbeConfiguration(core, 'healthtest')
+  const volumes = getVolumeConfig(core.getMultilineInput('persistentVolumes'), 'persistentVolumeClaim')
+  const volumeMounts = core.getMultilineInput('volumeMounts').map(v => JSON.parse(v) as VolumeMountConfig)
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
@@ -73,6 +88,8 @@ const run = async () => {
     team: core.getInput('team'),
     readinessProbe,
     livenessProbe,
+    volumes,
+    volumeMounts,
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
     imageName,

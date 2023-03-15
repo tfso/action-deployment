@@ -6,6 +6,25 @@ export type ProbeConfig = {
     command?: string[]
 }
 
+export type PersistentVolumeClaimConfig = {
+    volumeType: 'persistentVolumeClaim'
+    readOnly: boolean
+    claimName: string
+}
+
+export type VolumeConfig = {
+    name: string
+    volume: PersistentVolumeClaimConfig
+}
+
+export type VolumeMountConfig = {
+    readOnly: boolean
+    path: string
+    subPath?: string
+    name: string
+}
+
+
 export type Deployment = {
     env: string
     serviceName: string
@@ -18,6 +37,8 @@ export type Deployment = {
     instances: number
     readinessProbe: ProbeConfig,
     livenessProbe: ProbeConfig,
+    volumes: VolumeConfig[]
+    volumeMounts: ContainerVolumeMountConfig[]
     dd_service: string
     team: string
     module: string

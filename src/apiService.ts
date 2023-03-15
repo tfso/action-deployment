@@ -64,7 +64,9 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
     livenessProbe: deployment.livenessProbe,
     instances: deployment.instances,
     imageName: deployment.imageName,
-    deployerName: deployment.deployerName
+    deployerName: deployment.deployerName,
+    volumes: deployment.volumes,
+    volumeMounts: deployment.volumeMounts
   },null,2);  
   console.log("POST BODY",params);
   const response = await fetch(`${deployment.uri}/${deployment.type}`, {
