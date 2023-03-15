@@ -12,14 +12,15 @@ Some very nice people have created a way to test GH Actions locally, called [act
 
 1. Download [act](https://github.com/nektos/act)
 2. Comment out the `dist` line in the [.gitignore](./.gitignore) file. (annoying I know, but `act` does not find dist if it is in `.gitignore`)
-3. Ensure you have cloned and setup `tfso/deploymentapi` locally. You will likely need to connected to our VPN as well.
+3. Ensure you have cloned and setup `tfso/deploymentapi` locally.
 4. Find a repository that has already run a deployment job using `tfso/action-deployment`. Find the step that deploys, expand the **Run tfso/action-deployment@v1** and copy its content.
 5. Create your own action using the content - you can create a file called `my_test.yml` under `.github/workflows`. The file is ignored by git, so have as much fun as you want here.
     - If you point to secrets in the workflow file, you can create a file called `.env-test-secrets` (also ignored). And tell `act` to look for the secrets file.
 
 In the end you might have a YAML file looking something like this:
 
-``yml
+*.github/workflows/my_test.yml*
+```yml
 name: My test
 
 on: push
@@ -57,10 +58,14 @@ jobs:
           healthtest-path: /healthz
           readytest-path: /healthz
         env:
-          TFSO_APACHE_SERVER_NAME: payroll-review-114.api2.24sevenoffice.com
           DEPLOYMENT_URI: https://localhost:3000 # Point to locally running instance of deploymentapi
           NODE_TLS_REJECT_UNAUTHORIZED: 0 # This is needed when calling local deploymentapi, since it uses a self-signed cert
-````
+```
+
+*.env-test-secrets*
+```
+DEPLOYMENT_API_TOKEN=secret_token
+```
 
 Not that you must have the first two checkout steps, you also need to set `DEPLOYMENT_URI` and  `NODE_TLS_REJECT_UNAUTHORIZED: 0` if you want to work against a locally running deploymentapi.
 
