@@ -62,12 +62,14 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: 0 # This is needed when calling local deploymentapi, since it uses a self-signed cert
 ```
 
+Note that you must have the first two checkout steps, you also need to set `DEPLOYMENT_URI` and  `NODE_TLS_REJECT_UNAUTHORIZED: 0` if you want to work against a locally running deploymentapi.
+
+The secrets file is similar to .env files: 
+
 *.env-test-secrets*
 ```
 DEPLOYMENT_API_TOKEN=secret_token
 ```
-
-Not that you must have the first two checkout steps, you also need to set `DEPLOYMENT_URI` and  `NODE_TLS_REJECT_UNAUTHORIZED: 0` if you want to work against a locally running deploymentapi.
 
 The last step:
 
