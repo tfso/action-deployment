@@ -38,7 +38,7 @@ export type Deployment = {
     readinessProbe: ProbeConfig,
     livenessProbe: ProbeConfig,
     volumes: VolumeConfig[]
-    volumeMounts: ContainerVolumeMountConfig[]
+    volumeMounts: VolumeMountConfig[]
     dd_service: string
     team: string
     module: string
@@ -46,4 +46,5 @@ export type Deployment = {
     containerPort: number
     environmentVariables: {[name:string]:string}
     deployerName: string
+    proxyBufferSize: string
 }

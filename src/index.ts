@@ -60,10 +60,11 @@ const run = async () => {
   const envVariables = Object.keys(process.env || {}).filter(x=>x.indexOf("TFSO_")==0).reduce((prev:{[name:string]:string},cur:string)=>{ prev[cur.replace('TFSO_','')] = process.env[cur]; return prev } ,{})
   const containerPortString = core.getInput('container-port');
   const httpEndpoint = core.getInput('http-endpoint');
+  const proxyBufferSize = core.getInput("proxy-buffer-size")
   const readinessProbe = getProbeConfiguration(core, 'readytest')
   const livenessProbe = getProbeConfiguration(core, 'healthtest')
-  const volumes = getVolumeConfig(core.getMultilineInput('persistentVolumes'), 'persistentVolumeClaim')
-  const volumeMounts = core.getMultilineInput('volumeMounts').map(v => JSON.parse(v) as VolumeMountConfig)
+  const volumes = getVolumeConfig(core.getMultilineInput('persistent-volumes'), 'persistentVolumeClaim')
+  const volumeMounts = core.getMultilineInput('volume-mounts').map(v => JSON.parse(v) as VolumeMountConfig)
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
@@ -93,7 +94,8 @@ const run = async () => {
     dd_service: core.getInput('dd-service'),
     instances: parseInt(core.getInput('instances')),
     imageName,
-    deployerName: deployerName
+    deployerName: deployerName,
+    proxyBufferSize,
 
   };
   console.log(JSON.stringify(deployParams));
