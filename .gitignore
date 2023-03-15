@@ -1,3 +1,5 @@
 node_modules
 test.js
+.env-test-secrets
 dist
+.github/workflows/my_test.yml
