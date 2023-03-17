@@ -60,7 +60,15 @@ inputs:
   healthtest-command:
     required: false
     description: 'Commands that will be run - test if commands exit with exit code 0 '
-
+  persistent-volumes:
+    required: false
+    description: 'Setup a persistent volume for the deployment, must be a multi line string with objects'
+  volume-mounts:
+    required: false
+    description: 'Config for mounting volumes to a container in Rancher2, must be a multi line string with objects'
+  proxy-buffer-size:
+    required: false
+    description: 'Max buffer size of the nginx controller ingress (Rancher2)'
   readytest-initialdelay:
     required: false
     description: 'Delay in seconds before initial readiness probing'
