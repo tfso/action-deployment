@@ -1,0 +1,19 @@
+name: 'Deployment'
+description: 'Deploys Docker container or static website to TFSO environment'
+inputs:
+  deployment_token:
+    description: 'Authorization token that is used to authenticate against the Deployment API'
+    required: true
+  service_name: 
+    description: 'Name of the Rancher service to delete, _must_ start with tfso. (match AppVeyor convention)'
+    required: true
+  module: 
+    description: 'Name of the module the API is a part of'
+    required: true 
+  environment:
+    description: 'Deployment environment'
+    required: true
+    default: 'beta'
+runs:
+  using: 'node16'
+  main: '../dist/delete/index.js'
