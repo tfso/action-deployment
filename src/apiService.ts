@@ -1,6 +1,5 @@
 import { Deployment } from "./types";
-
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 const getEnvironment = (env: string) => {
   switch (env.toLowerCase()) {
@@ -23,6 +22,27 @@ const getEnvironment = (env: string) => {
       };
   }
 };
+
+export const deleteDeployment = async (
+  authToken: string,
+  uri: string,
+  resource: string,
+  env: string, 
+  module: string, 
+  serviceName: string) => {
+    const deploymentId = `${env}:${module}:${serviceName}`
+    const response = await fetch(`${uri}/${resource}/${deploymentId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      }
+    })
+
+    if (response.status != 204) {
+      console.error(await response.json())
+      throw new Error(`Received status ${response.status}`)
+    }
+}
 
 export const checkStatus = async (authToken:string, location: string) => {
   const response = await fetch(location, {
