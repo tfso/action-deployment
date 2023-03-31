@@ -1,5 +1,5 @@
-name: 'Deployment'
-description: 'Deploys Docker container or static website to TFSO environment'
+name: 'Delete deployment'
+description: 'Deletes deployment'
 inputs:
   deployment_token:
     description: 'Authorization token that is used to authenticate against the Deployment API'
