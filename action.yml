@@ -83,4 +83,4 @@ inputs:
     description: 'Number of instances to start by default'
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'dist/deploy/index.js'
