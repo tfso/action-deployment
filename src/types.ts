@@ -48,3 +48,6 @@ export type Deployment = {
     deployerName: string
     proxyBufferSize: string
 }
+
+export type FetchResponse = { json: () => Promise<any>, status: number}
+export type Fetch =  (url: RequestInfo,init?: RequestInit) => Promise<FetchResponse>
