@@ -86,7 +86,8 @@ inputs:
     description: 'Number of instances to start by default'
   secrets_string:
     required: false
-    description: 'A comma separated list of key:value that sets the secrets'
+    description: 'JSON formatted string with secrets'
+    
 runs:
   using: 'node16'
   main: 'dist/deploy/index.js'
