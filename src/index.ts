@@ -3,7 +3,6 @@ import { context } from "@actions/github";
 import { deploy, checkStatus } from "./apiService";
 import { ProbeConfig, VolumeConfig, VolumeMountConfig } from "./types";
 import { Secrets } from "./Secrets";
-import fetch from "node-fetch";
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -126,7 +125,7 @@ const run = async () => {
   const secrets = core.getInput("secrets_string");
   if (secrets) {
     console.log("Setting secrets...");
-    const secretManager = new Secrets(token, new URL(location), fetch);
+    const secretManager = new Secrets(token, new URL(location));
     await secretManager.postSecretsString(secrets);
     console.log("Secrets was set.");
   }
