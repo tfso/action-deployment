@@ -44,6 +44,24 @@ export const deleteDeployment = async (
     }
 }
 
+export const setSecrets = async (authToken:string, location: string) => {
+  const response = await fetch(location, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    }});
+    
+    if (response.status>=200 && response.status<=299) {
+      const resJson = await response.json();
+      return resJson.status;
+    }
+    else {
+      throw "Deployment not found!";
+    }
+
+}
+
+
 export const checkStatus = async (authToken:string, location: string) => {
   const response = await fetch(location, {
     method: "GET",

@@ -2,6 +2,7 @@ import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy, checkStatus} from "./apiService";
 import { ProbeConfig, VolumeConfig, VolumeMountConfig } from './types'
+import { Secrets } from "./Secrets";
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -100,10 +101,20 @@ const run = async () => {
   };
   console.log(JSON.stringify(deployParams));
   var location = await deploy(token, deployParams);
+  core.setOutput("deploymenturl",location)
   if (!location) {
     console.log("No location returned.  Assume the deployment is ok!");
     return;
   }
+
+  const secrets = core.getInput('secrets_string')
+  if (secrets) {
+    console.log("Setting secrets...")
+    const secretManager = new Secrets(token,new URL(location),fetch)
+    await secretManager.postSecretsString(secrets)  
+    console.log("Secrets was set.")
+  }
+
   console.log("Checking location ",location," for latest status on deployment");
   for (var x=0;x<15;x++) {
     console.log("Waiting ",x,"seconds - and then testing status");

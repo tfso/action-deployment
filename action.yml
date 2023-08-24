@@ -1,5 +1,8 @@
 name: 'Deployment'
 description: 'Deploys Docker container or static website to TFSO environment'
+outputs:
+  deploymenturl:
+    description: 'The url of the deployment, can be used for successive calls to the deploymentapi'
 inputs:
   image_name:
     required: false
@@ -81,6 +84,10 @@ inputs:
   instances:
     required: false
     description: 'Number of instances to start by default'
+  secrets_string:
+    required: false
+    description: 'JSON formatted string with secrets'
+    
 runs:
   using: 'node16'
   main: 'dist/deploy/index.js'
