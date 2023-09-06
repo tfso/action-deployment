@@ -18,9 +18,10 @@ export class Secrets {
     const secretAsObject = JSON.parse(secretString);
     const result = await fetch(this.location.href, {
       method: "POST",
-      body: JSON.stringify(secretAsObject),
+      body: JSON.stringify({ secrets: secretAsObject }),
       headers: {
         Authorization: `Bearer ${this.authToken}`,
+        "Content-Type": "application/json",
       },
     });
     console.log(`Http result for setting secrets : ${result.status}`);

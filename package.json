@@ -12,6 +12,8 @@
         "build": "concurrently --kill-others \"npm run build:deploy\" \"npm run build:delete\"",
         "build:delete": "esbuild src/delete.ts --bundle --outfile=dist/delete/index.js --platform=node",
         "build:deploy": "esbuild src/index.ts --bundle --outfile=dist/deploy/index.js --platform=node",
+        "build:test": "esbuild src/tests/IntegrationTest.ts --bundle --outfile=dist/integration/index.js --platform=node",
+
         "lint": "eslint"
     },
     "keywords": [],
