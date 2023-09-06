@@ -12,13 +12,17 @@ export class Secrets {
   }
 
   async postSecretsString(secretString: string): Promise<void> {
+    console.log(
+      `Calling endpoint ${this.location.href} with a secret : ${secretString.length} bytes`
+    );
     const secretAsObject = JSON.parse(secretString);
-    await fetch(this.location.href, {
+    const result = await fetch(this.location.href, {
       method: "POST",
       body: JSON.stringify(secretAsObject),
       headers: {
         Authorization: `Bearer ${this.authToken}`,
       },
     });
+    console.log(`Http result for setting secrets : ${result.status}`);
   }
 }
