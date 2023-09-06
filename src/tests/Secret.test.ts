@@ -1,6 +1,6 @@
-import { Secrets } from "../src/Secrets";
+import { Secrets } from "../Secrets";
 import { expect, test } from "vitest";
-import { Fetch, FetchResponse } from "../src/types";
+import { Fetch, FetchResponse } from "../types";
 
 test("Test that secret string is converted to object correctly", () => {
   let returnedsecrets = {};
