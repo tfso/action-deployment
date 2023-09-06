@@ -1,5 +1,5 @@
 import path from "path";
-import fetch from "node-fetch";
+import { Fetch } from "./types";
 
 export class Secrets {
   authToken: string;
@@ -11,7 +11,7 @@ export class Secrets {
     );
   }
 
-  async postSecretsString(secretString: string): Promise<void> {
+  async postSecretsString(secretString: string, fetch: Fetch): Promise<void> {
     console.log(
       `Calling endpoint ${this.location.href} with a secret : ${secretString.length} bytes`
     );
