@@ -27,7 +27,7 @@ test("Test that secret string is converted to object correctly", () => {
     JSON.stringify({ test1: "1", test2: "2" }),
     func as Fetch
   );
-  expect(returnedsecrets).toEqual({ test1: "1", test2: "2" });
+  expect(returnedsecrets).toEqual({ secrets: { test1: "1", test2: "2" } });
   expect(location).toEqual("https://example.org/id/secrets");
   expect(token).toEqual("Bearer token");
 });
