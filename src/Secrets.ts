@@ -21,6 +21,7 @@ export class Secrets {
       body: JSON.stringify({ secrets: secretAsObject }),
       headers: {
         Authorization: `Bearer ${this.authToken}`,
+        "Content-Type": "application/json",
       },
     });
     console.log(`Http result for setting secrets : ${result.status}`);
