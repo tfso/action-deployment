@@ -1,53 +1,57 @@
+import { RequestInfo, RequestInit } from "node-fetch";
+
 export type ProbeConfig = {
-    path?: string
-    periodSeconds?: number
-    initialDelaySeconds?: number
-    timeoutSeconds?: number
-    command?: string[]
-}
+  path?: string;
+  periodSeconds?: number;
+  initialDelaySeconds?: number;
+  timeoutSeconds?: number;
+  command?: string[];
+};
 
 export type PersistentVolumeClaimConfig = {
-    volumeType: 'persistentVolumeClaim'
-    readOnly: boolean
-    claimName: string
-}
+  volumeType: "persistentVolumeClaim";
+  readOnly: boolean;
+  claimName: string;
+};
 
 export type VolumeConfig = {
-    name: string
-    volume: PersistentVolumeClaimConfig
-}
+  name: string;
+  volume: PersistentVolumeClaimConfig;
+};
 
 export type VolumeMountConfig = {
-    readOnly: boolean
-    path: string
-    subPath?: string
-    name: string
-}
-
+  readOnly: boolean;
+  path: string;
+  subPath?: string;
+  name: string;
+};
 
 export type Deployment = {
-    env: string
-    serviceName: string
-    version: string
-    type: string
-    uri: string
-    isReleaseChannel: boolean
-    branch?: string
-    imageName?: string,
-    instances: number
-    readinessProbe: ProbeConfig,
-    livenessProbe: ProbeConfig,
-    volumes: VolumeConfig[]
-    volumeMounts: VolumeMountConfig[]
-    dd_service: string
-    team: string
-    module: string
-    httpEndpoint: string
-    containerPort: number
-    environmentVariables: {[name:string]:string}
-    deployerName: string
-    proxyBufferSize: string
-}
+  env: string;
+  serviceName: string;
+  version: string;
+  type: string;
+  uri: string;
+  isReleaseChannel: boolean;
+  branch?: string;
+  imageName?: string;
+  instances: number;
+  readinessProbe: ProbeConfig;
+  livenessProbe: ProbeConfig;
+  volumes: VolumeConfig[];
+  volumeMounts: VolumeMountConfig[];
+  dd_service: string;
+  team: string;
+  module: string;
+  httpEndpoint: string;
+  containerPort: number;
+  environmentVariables: { [name: string]: string };
+  deployerName: string;
+  proxyBufferSize: string;
+};
 
-export type FetchResponse = { json: () => Promise<any>, status: number}
-export type Fetch =  (url: RequestInfo,init?: RequestInit) => Promise<FetchResponse>
+export type FetchResponse = { json: () => Promise<any>; status: number };
+export type Fetch = (
+  url: RequestInfo,
+  init?: RequestInit
+) => Promise<FetchResponse>;

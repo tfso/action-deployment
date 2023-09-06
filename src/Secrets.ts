@@ -1,5 +1,5 @@
 import path from "path";
-import fetch from "node-fetch";
+import { Fetch } from "./types";
 
 export class Secrets {
   authToken: string;
@@ -11,14 +11,19 @@ export class Secrets {
     );
   }
 
-  async postSecretsString(secretString: string): Promise<void> {
+  async postSecretsString(secretString: string, fetch: Fetch): Promise<void> {
+    console.log(
+      `Calling endpoint ${this.location.href} with a secret : ${secretString.length} bytes`
+    );
     const secretAsObject = JSON.parse(secretString);
-    await fetch(this.location.href, {
+    const result = await fetch(this.location.href, {
       method: "POST",
-      body: JSON.stringify(secretAsObject),
+      body: JSON.stringify({ secrets: secretAsObject }),
       headers: {
         Authorization: `Bearer ${this.authToken}`,
+        "Content-Type": "application/json",
       },
     });
+    console.log(`Http result for setting secrets : ${result.status}`);
   }
 }
