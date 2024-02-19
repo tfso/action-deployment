@@ -45,22 +45,6 @@ export const deleteDeployment = async (
   }
 };
 
-export const setSecrets = async (authToken: string, location: string) => {
-  const response = await fetch(location, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
-
-  if (response.status >= 200 && response.status <= 299) {
-    const resJson = await response.json();
-    return resJson.status;
-  } else {
-    throw "Deployment not found!";
-  }
-};
-
 export const checkStatus = async (authToken: string, location: string) => {
   const response = await fetch(location, {
     method: "GET",
@@ -105,11 +89,12 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       volumes: deployment.volumes,
       volumeMounts: deployment.volumeMounts,
       proxyBufferSize: deployment.proxyBufferSize,
+      secrets: deployment.secrets,
+      resources: deployment.resources
     },
     null,
     2
   );
-  console.log("POST BODY", params);
   const response = await fetch(`${deployment.uri}/${deployment.type}`, {
     method: "POST",
     body: params,
