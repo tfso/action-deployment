@@ -2,8 +2,6 @@ import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy, checkStatus } from "./apiService";
 import { ProbeConfig, VolumeConfig, VolumeMountConfig } from "./types";
-import { Secrets } from "./Secrets";
-import fetch from "node-fetch";
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -65,12 +63,7 @@ const run = async () => {
   const type = getDeploymentType(core.getInput("type"));
   console.log("Type ", type);
   const isReleaseChannel = core.getBooleanInput("release-channel");
-  const envVariables = Object.keys(process.env || {})
-    .filter((x) => x.indexOf("TFSO_") == 0)
-    .reduce((prev: { [name: string]: string }, cur: string) => {
-      prev[cur.replace("TFSO_", "")] = process.env[cur];
-      return prev;
-    }, {});
+  const envVariables = getEnvironmentVariables(process.env);
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint");
   const proxyBufferSize = core.getInput("proxy-buffer-size");
@@ -83,12 +76,17 @@ const run = async () => {
   const volumeMounts = core
     .getMultilineInput("volume-mounts")
     .map((v) => JSON.parse(v) as VolumeMountConfig);
+  const resources = getResourceSettings(core);
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
   const deploymentUri =
     process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
   console.log("Using url ", deploymentUri);
+  const secrets = {
+    ...JSON.parse(core.getInput("secrets_string") || "{}"),
+    ...getSecretEnvironmentVariables(process.env),
+  };
 
   let containerPort: number | undefined = undefined;
   if (containerPortString) containerPort = parseInt(containerPortString);
@@ -114,21 +112,14 @@ const run = async () => {
     imageName,
     deployerName: deployerName,
     proxyBufferSize,
+    resources,
   };
   console.log(JSON.stringify(deployParams));
-  var location = await deploy(token, deployParams);
+  var location = await deploy(token, { ...deployParams, secrets });
   core.setOutput("deploymenturl", location);
   if (!location) {
     console.log("No location returned.  Assume the deployment is ok!");
     return;
-  }
-
-  const secrets = core.getInput("secrets_string");
-  if (secrets) {
-    console.log("Setting secrets...");
-    const secretManager = new Secrets(token, new URL(location));
-    await secretManager.postSecretsString(secrets, fetch);
-    console.log("Secrets was set.");
   }
 
   console.log(
@@ -148,5 +139,36 @@ const run = async () => {
   }
   throw "Error : Deployment was not set to active within set period.";
 };
+
+function getResourceSettings(c: typeof core) {
+  return {
+    requests: {
+      memoryMib: parseInt(c.getInput("memory-reservation") || "512"),
+      mCpu: parseInt(c.getInput("cpu-reservation") || "500"),
+    },
+    limits: {
+      memoryMib: parseInt(c.getInput("memory-limit") || "512"),
+      mCpu: parseInt(c.getInput("cpu-limit") || "1000"),
+    },
+  };
+}
+
+function getSecretEnvironmentVariables(env: Record<string, string>) {
+  return Object.keys(env || {})
+    .filter((x) => x.indexOf("TFSO_SECRET_") == 0)
+    .reduce((prev: { [name: string]: string }, cur: string) => {
+      prev[cur.replace("TFSO_SECRET_", "")] = env[cur];
+      return prev;
+    }, {});
+}
+
+function getEnvironmentVariables(env: Record<string, string>) {
+  return Object.keys(env || {})
+    .filter((x) => x.startsWith("TFSO_") && !x.startsWith("TFSO_SECRET_"))
+    .reduce((prev: { [name: string]: string }, cur: string) => {
+      prev[cur.replace("TFSO_", "")] = env[cur];
+      return prev;
+    }, {});
+}
 
 run();

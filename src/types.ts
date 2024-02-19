@@ -26,6 +26,17 @@ export type VolumeMountConfig = {
   name: string;
 };
 
+export type Resources = {
+  requests: {
+    memoryMib: number;
+    mCpu: number;
+  };
+  limits: {
+    memoryMib: number;
+    mCpu: number;
+  };
+};
+
 export type Deployment = {
   env: string;
   serviceName: string;
@@ -46,8 +57,10 @@ export type Deployment = {
   httpEndpoint: string;
   containerPort: number;
   environmentVariables: { [name: string]: string };
+  secrets: { [name: string]: string };
   deployerName: string;
   proxyBufferSize: string;
+  resources: Resources;
 };
 
 export type FetchResponse = { json: () => Promise<any>; status: number };

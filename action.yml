@@ -87,6 +87,18 @@ inputs:
   secrets_string:
     required: false
     description: 'JSON formatted string with secrets'
+  memory-limit:
+    required: false
+    description: "Memory (MiB) limit for the container (max memory)"
+  memory-reservation:
+    required: false
+    description: "Memory (MiB) reservation for the container (min memory)"
+  cpu-limit:
+    required: false
+    description: "CPU (mCPU) limit for the container (max cpu)"
+  cpu-reservation:
+    required: false
+    description: "CPU (mCPU) reservation for the container (min cpu)"
     
 runs:
   using: 'node16'
