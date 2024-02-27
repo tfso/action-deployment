@@ -127,7 +127,7 @@ const run = async () => {
     location,
     " for latest status on deployment"
   );
-  for (var x = 0; x < 15; x++) {
+  for (var x = 0; x < 20; x++) {
     console.log("Waiting ", x, "seconds - and then testing status");
     await sleep((x + 1) * 1000);
     const status = await checkStatus(token, location);
