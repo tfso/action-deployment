@@ -143,8 +143,8 @@ const run = async () => {
 function getResourceSettings(c: typeof core) {
   return {
     requests: {
-      memoryMib: parseInt(c.getInput("memory-reservation") || "512"),
-      mCpu: parseInt(c.getInput("cpu-reservation") || "500"),
+      memoryMib: parseInt(c.getInput("memory-reservation") || "128"),
+      mCpu: parseInt(c.getInput("cpu-reservation") || "50"),
     },
     limits: {
       memoryMib: parseInt(c.getInput("memory-limit") || "512"),
