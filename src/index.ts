@@ -21,11 +21,18 @@ const getProbeConfiguration = (core: any, probeType: string): ProbeConfig => {
   const period = core.getInput(`${probeType}-period`);
   const initialdelay = core.getInput(`${probeType}-initialdelay`);
   const timeout = core.getInput(`${probeType}-timeout`);
+
+  const path = core.getInput(`${probeType}-path`) || undefined;
+  const command = core.getInput(`${probeType}-command`)
+    ? [core.getInput(`${probeType}-command`)]
+    : undefined;
+  if (!path && !command) {
+    return undefined;
+  }
+
   return {
-    path: core.getInput(`${probeType}-path`) || undefined,
-    command: core.getInput(`${probeType}-command`)
-      ? [core.getInput(`${probeType}-command`)]
-      : undefined,
+    path,
+    command,
     periodSeconds: period ? parseInt(period) : undefined,
     initialDelaySeconds: initialdelay ? parseInt(initialdelay) : undefined,
     timeoutSeconds: timeout ? parseInt(timeout) : undefined,
@@ -65,7 +72,7 @@ const run = async () => {
   const isReleaseChannel = core.getBooleanInput("release-channel");
   const envVariables = getEnvironmentVariables(process.env);
   const containerPortString = core.getInput("container-port");
-  const httpEndpoint = core.getInput("http-endpoint");
+  const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
   const livenessProbe = getProbeConfiguration(core, "healthtest");
@@ -115,7 +122,16 @@ const run = async () => {
     resources,
   };
   console.log(JSON.stringify(deployParams));
-  var location = await deploy(token, { ...deployParams, secrets });
+
+  try {
+    const location = await deploy(token, { ...deployParams, secrets });
+    await waitForDeploymentToComplete(location, token);
+  } catch (error) {
+    core.setFailed(error)
+  }
+};
+
+async function waitForDeploymentToComplete(location: string, token: string): Promise<void> {
   core.setOutput("deploymenturl", location);
   if (!location) {
     console.log("No location returned.  Assume the deployment is ok!");
@@ -138,7 +154,7 @@ const run = async () => {
     }
   }
   throw "Error : Deployment was not set to active within set period.";
-};
+}
 
 function getResourceSettings(c: typeof core) {
   return {
