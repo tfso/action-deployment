@@ -76,7 +76,6 @@ const run = async () => {
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
   const livenessProbe = getProbeConfiguration(core, "healthtest");
-  console.log("THEM PROBES:", readinessProbe, livenessProbe);
   const volumes = getVolumeConfig(
     core.getMultilineInput("persistent-volumes"),
     "persistentVolumeClaim"
