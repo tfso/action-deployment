@@ -42,8 +42,7 @@ inputs:
     default: 'false'
   healthtest-path:
     required: false
-    description: 'Path to health test for container'
-    default: '/health'
+    description: 'Path to health test for container (~ or empty string will ignore path)'
   healthtest-timeout:
     required: false
     description: 'Timeout after failing test - in seconds'
@@ -55,8 +54,7 @@ inputs:
     description: 'Time in seconds between each test'
   readytest-path:
     required: false
-    description: 'Path to ready test for container'
-    default: '/ready'
+    description: 'Path to ready test for container (~ or empty string will ignore path)'
   readytest-command:
     required: false
     description: 'Commands that will be run - test if commands exit with exit code 0 '

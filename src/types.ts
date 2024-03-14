@@ -47,8 +47,8 @@ export type Deployment = {
   branch?: string;
   imageName?: string;
   instances: number;
-  readinessProbe: ProbeConfig;
-  livenessProbe: ProbeConfig;
+  readinessProbe?: ProbeConfig;
+  livenessProbe?: ProbeConfig;
   volumes: VolumeConfig[];
   volumeMounts: VolumeMountConfig[];
   dd_service: string;
