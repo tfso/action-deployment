@@ -9,7 +9,7 @@
     ],
     "scripts": {
         "test": "vitest run --config ./src/tests/vitest.config.ts",
-        "build": "concurrently --kill-others \"npm run build:deploy\" \"npm run build:delete\"",
+        "build": "concurrently \"npm run build:deploy\" \"npm run build:delete\"",
         "build:delete": "esbuild src/delete.ts --bundle --outfile=dist/delete/index.js --platform=node",
         "build:deploy": "esbuild src/index.ts --bundle --outfile=dist/deploy/index.js --platform=node",
         "lint": "eslint"
