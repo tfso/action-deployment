@@ -2,6 +2,7 @@ import core = require("@actions/core");
 import { context } from "@actions/github";
 import { deploy, checkStatus } from "./apiService";
 import { ProbeConfig, VolumeConfig, VolumeMountConfig } from "./types";
+import { getDeploymentUri } from "./utils";
 
 const getDeploymentType = (type: string): string => {
   switch (type) {
@@ -87,8 +88,7 @@ const run = async () => {
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
-  const deploymentUri =
-    process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+  const deploymentUri = getDeploymentUri(env)
   console.log("Using url ", deploymentUri);
   const secrets = {
     ...JSON.parse(core.getInput("secrets_string") || "{}"),

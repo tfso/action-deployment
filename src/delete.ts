@@ -1,5 +1,6 @@
 import core = require("@actions/core");
 import {deleteDeployment} from "./apiService";
+import { getDeploymentUri } from "./utils";
 
 const run = async () => {
     console.log("Running rancher2 deployment");
@@ -9,8 +10,7 @@ const run = async () => {
     const module = core.getInput('module');
     const httpResource = "container-upgradev3";
     
-    const deploymentUri =
-      process.env.DEPLOYMENT_URI || "https://deployment.api.24sevenoffice.com";
+    const deploymentUri = getDeploymentUri(env)
     console.log("Using url ",deploymentUri);
   
 
