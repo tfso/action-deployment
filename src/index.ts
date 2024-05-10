@@ -120,7 +120,7 @@ const run = async () => {
     imageName,
     deployerName: deployerName,
     proxyBufferSize,
-    proxyBodySize,
+    proxyBodySize: proxyBodySize && proxyBodySize.length > 0 ? proxyBodySize : undefined,
     resources,
   };
   console.log(JSON.stringify(deployParams));
