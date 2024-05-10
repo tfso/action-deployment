@@ -89,6 +89,7 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       volumes: deployment.volumes,
       volumeMounts: deployment.volumeMounts,
       proxyBufferSize: deployment.proxyBufferSize,
+      proxyBodySize: deployment. proxyBodySize,
       secrets: deployment.secrets,
       resources: deployment.resources
     },

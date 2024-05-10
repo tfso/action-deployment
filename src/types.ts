@@ -60,6 +60,7 @@ export type Deployment = {
   secrets: { [name: string]: string };
   deployerName: string;
   proxyBufferSize: string;
+  proxyBodySize: string;
   resources: Resources;
 };
 
