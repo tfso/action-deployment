@@ -75,6 +75,7 @@ const run = async () => {
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const proxyBufferSize = core.getInput("proxy-buffer-size");
+  const proxyBodySize = core.getInput("proxy-body-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
   const livenessProbe = getProbeConfiguration(core, "healthtest");
   const volumes = getVolumeConfig(
@@ -119,6 +120,7 @@ const run = async () => {
     imageName,
     deployerName: deployerName,
     proxyBufferSize,
+    proxyBodySize: proxyBodySize && proxyBodySize.length > 0 ? proxyBodySize : undefined,
     resources,
   };
   console.log(JSON.stringify(deployParams));

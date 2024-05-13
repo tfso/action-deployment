@@ -70,6 +70,9 @@ inputs:
   proxy-buffer-size:
     required: false
     description: 'Max buffer size of the nginx controller ingress (Rancher2)'
+  proxy-body-size:
+    required: false
+    description: "Set max body size for ingress, '0' is unlimited. Read more - https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#custom-max-body-size"
   readytest-initialdelay:
     required: false
     description: 'Delay in seconds before initial readiness probing'
