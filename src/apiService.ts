@@ -91,7 +91,8 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       proxyBufferSize: deployment.proxyBufferSize,
       proxyBodySize: deployment.proxyBodySize,
       secrets: deployment.secrets,
-      resources: deployment.resources
+      resources: deployment.resources,
+      corsSettings: deployment.corsSettings,
     },
     null,
     2

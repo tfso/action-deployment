@@ -100,6 +100,9 @@ inputs:
   cpu-reservation:
     required: false
     description: "CPU (mCPU) reservation for the container (min cpu)"
+  cors-allowed-origins:
+    required: false
+    description: "Comma separated list of allowed cross-origin URLs"
     
 runs:
   using: 'node16'
