@@ -62,6 +62,11 @@ export type Deployment = {
   proxyBufferSize: string;
   proxyBodySize: string;
   resources: Resources;
+  corsSettings: CorsSettings;
+};
+
+export type CorsSettings = {
+  allowedOrigins: string;
 };
 
 export type FetchResponse = { json: () => Promise<any>; status: number };

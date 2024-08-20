@@ -78,6 +78,7 @@ const run = async () => {
   const proxyBodySize = core.getInput("proxy-body-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
   const livenessProbe = getProbeConfiguration(core, "healthtest");
+  const allowedOrigins = core.getInput("cors-allowed-origins") ?? undefined;
   const volumes = getVolumeConfig(
     core.getMultilineInput("persistent-volumes"),
     "persistentVolumeClaim"
@@ -89,7 +90,7 @@ const run = async () => {
   const branch =
     context.ref.replace("refs/heads/", "") ||
     context.ref.replace("refs/tags/", "");
-  const deploymentUri = getDeploymentUri(env)
+  const deploymentUri = getDeploymentUri(env);
   console.log("Using url ", deploymentUri);
   const secrets = {
     ...JSON.parse(core.getInput("secrets_string") || "{}"),
@@ -120,8 +121,12 @@ const run = async () => {
     imageName,
     deployerName: deployerName,
     proxyBufferSize,
-    proxyBodySize: proxyBodySize && proxyBodySize.length > 0 ? proxyBodySize : undefined,
+    proxyBodySize:
+      proxyBodySize && proxyBodySize.length > 0 ? proxyBodySize : undefined,
     resources,
+    corsSettings: {
+      allowedOrigins,
+    },
   };
   console.log(JSON.stringify(deployParams));
 
@@ -129,11 +134,14 @@ const run = async () => {
     const location = await deploy(token, { ...deployParams, secrets });
     await waitForDeploymentToComplete(location, token);
   } catch (error) {
-    core.setFailed(error)
+    core.setFailed(error);
   }
 };
 
-async function waitForDeploymentToComplete(location: string, token: string): Promise<void> {
+async function waitForDeploymentToComplete(
+  location: string,
+  token: string
+): Promise<void> {
   core.setOutput("deploymenturl", location);
   if (!location) {
     console.log("No location returned.  Assume the deployment is ok!");
