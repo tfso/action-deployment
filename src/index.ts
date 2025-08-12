@@ -48,14 +48,14 @@ const getVolumeConfig = (
     .map((v) => JSON.parse(v))
     .map(
       (v) =>
-        ({
-          name: v.name,
-          volume: {
-            readOnly: v.readOnly,
-            volumeType: volumeType,
-            claimName: v.claimName,
-          },
-        } as VolumeConfig)
+      ({
+        name: v.name,
+        volume: {
+          readOnly: v.readOnly,
+          volumeType: volumeType,
+          claimName: v.claimName,
+        },
+      } as VolumeConfig)
     );
 };
 
@@ -74,6 +74,7 @@ const run = async () => {
   const envVariables = getEnvironmentVariables(process.env);
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
+  const repository = core.getInput("repository") || context.repo.repo;
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const proxyBodySize = core.getInput("proxy-body-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
@@ -127,6 +128,7 @@ const run = async () => {
     corsSettings: {
       allowedOrigins,
     },
+    repository
   };
   console.log(JSON.stringify(deployParams));
 
