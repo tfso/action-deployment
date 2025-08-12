@@ -63,6 +63,7 @@ export type Deployment = {
   proxyBodySize: string;
   resources: Resources;
   corsSettings: CorsSettings;
+  repository?: string;
 };
 
 export type CorsSettings = {

@@ -64,6 +64,7 @@ export const checkStatus = async (authToken: string, location: string) => {
 export const deploy = async (authToken: string, deployment: Deployment) => {
   const { rancherEnv, awsBucket } = getEnvironment(deployment.env);
   console.log(`Deploying to Rancher env: ${rancherEnv}`);
+
   const params = JSON.stringify(
     {
       environmentVariables: {
@@ -72,6 +73,7 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
         aws_bucket: awsBucket,
         ...deployment.environmentVariables,
       },
+      repository: deployment.repository,
       environment: deployment.env,
       projectName: deployment.serviceName,
       buildVersion: deployment.version,
