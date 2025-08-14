@@ -76,6 +76,21 @@ function getRepo(repoName: string): string {
 
   return `${owner}/${repoName}`;
 }
+
+
+function getCommitSha(): string {
+  const fromEnv = process.env.DD_GIT_COMMIT_SHA?.trim();
+  if (fromEnv) return fromEnv;
+  return process.env.GITHUB_SHA || context.sha || "unknown";
+}
+
+function getRepoUrl(owner: string, repo: string): string {
+  const fromEnv = process.env.DD_GIT_REPOSITORY_URL?.trim();
+  if (fromEnv) return fromEnv;
+  return `https://github.com/${owner}/${repo}.git`;
+}
+
+
 const run = async () => {
   console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
@@ -90,13 +105,18 @@ const run = async () => {
   const isReleaseChannel = core.getBooleanInput("release-channel");
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
-  const repository = core.getInput("repository") || context.repo.repo;
+  const owner = context.repo.owner;
+  const repository = context.repo.repo;
   const TFSO_REPOSITORY = getRepo(repository);
+  const DD_GIT_COMMIT_SHA = getCommitSha();
+  const DD_GIT_REPOSITORY_URL = getRepoUrl(owner, repository);
   const TFSO_WORKFLOW_FILE = getWorkflowFile(); 
     const envVariables = {
     ...getEnvironmentVariables(process.env),
     TFSO_REPOSITORY,
     TFSO_WORKFLOW_FILE,
+    DD_GIT_COMMIT_SHA,
+    DD_GIT_REPOSITORY_URL
 
   };
 
