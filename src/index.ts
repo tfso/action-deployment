@@ -59,7 +59,7 @@ const getVolumeConfig = (
     );
 };
 
-function getWorkflowFileName(): string {
+function getWorkflowFile(): string {
   const ref = process.env.GITHUB_WORKFLOW_REF;
   if (ref) {
     const m = ref.match(/\/\.github\/workflows\/([^@]+)@/);
@@ -68,18 +68,14 @@ function getWorkflowFileName(): string {
   return process.env.GITHUB_WORKFLOW || context.workflow || "unknown";
 }
 
-function ensureTfsoEnv(envVars: Record<string, string>, repository: string) {
-  const owner = context.repo.owner;
-  const tfsoRepo = `${owner}/${repository}`;
+function getRepo(repoName: string): string {
+  const fullOverride = process.env.TFSO_REPOSITORY?.trim();
+  if (fullOverride) return fullOverride;
 
-  if (envVars.TFSO_REPOSITORY === undefined) {
-    envVars.TFSO_REPOSITORY = tfsoRepo;
-  }
-  if (envVars.TFSO_WORKFLOW === undefined) {
-    envVars.TFSO_WORKFLOW = getWorkflowFileName();
-  }
+  const owner = (process.env.TFSO_REPOSITORY_OWNER?.trim()) || context.repo.owner;
+
+  return `${owner}/${repoName}`;
 }
-
 const run = async () => {
   console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
@@ -92,11 +88,17 @@ const run = async () => {
   const type = getDeploymentType(core.getInput("type"));
   console.log("Type ", type);
   const isReleaseChannel = core.getBooleanInput("release-channel");
-  const envVariables = getEnvironmentVariables(process.env);
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const repository = core.getInput("repository") || context.repo.repo;
-  ensureTfsoEnv(envVariables, repository);
+  const TFSO_REPOSITORY = getRepo(repository);
+  const TFSO_WORKFLOW_FILE = getWorkflowFile(); 
+    const envVariables = {
+    ...getEnvironmentVariables(process.env),
+    TFSO_REPOSITORY,
+    TFSO_WORKFLOW_FILE,
+
+  };
 
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const proxyBodySize = core.getInput("proxy-body-size");
@@ -151,7 +153,6 @@ const run = async () => {
     corsSettings: {
       allowedOrigins,
     },
-    repository
   };
   console.log(JSON.stringify(deployParams));
 
