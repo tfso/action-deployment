@@ -59,6 +59,23 @@ const getVolumeConfig = (
     );
 };
 
+function getWorkflowFile(): string {
+  const ref = process.env.GITHUB_WORKFLOW_REF;
+  if (ref) {
+    const m = ref.match(/\/\.github\/workflows\/([^@]+)@/);
+    if (m && m[1]) return m[1];
+  }
+  return process.env.GITHUB_WORKFLOW || context.workflow || "unknown";
+}
+
+function getRepo(repoName: string): string {
+  const fullOverride = process.env.TFSO_REPOSITORY?.trim();
+  if (fullOverride) return fullOverride;
+
+  const owner = (process.env.TFSO_REPOSITORY_OWNER?.trim()) || context.repo.owner;
+
+  return `${owner}/${repoName}`;
+}
 const run = async () => {
   console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
@@ -71,10 +88,18 @@ const run = async () => {
   const type = getDeploymentType(core.getInput("type"));
   console.log("Type ", type);
   const isReleaseChannel = core.getBooleanInput("release-channel");
-  const envVariables = getEnvironmentVariables(process.env);
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const repository = core.getInput("repository") || context.repo.repo;
+  const TFSO_REPOSITORY = getRepo(repository);
+  const TFSO_WORKFLOW_FILE = getWorkflowFile(); 
+    const envVariables = {
+    ...getEnvironmentVariables(process.env),
+    TFSO_REPOSITORY,
+    TFSO_WORKFLOW_FILE,
+
+  };
+
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const proxyBodySize = core.getInput("proxy-body-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");
@@ -128,7 +153,6 @@ const run = async () => {
     corsSettings: {
       allowedOrigins,
     },
-    repository
   };
   console.log(JSON.stringify(deployParams));
 

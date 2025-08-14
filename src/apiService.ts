@@ -73,7 +73,6 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
         aws_bucket: awsBucket,
         ...deployment.environmentVariables,
       },
-      repository: deployment.repository,
       environment: deployment.env,
       projectName: deployment.serviceName,
       buildVersion: deployment.version,
