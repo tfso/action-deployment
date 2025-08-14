@@ -59,6 +59,27 @@ const getVolumeConfig = (
     );
 };
 
+function getWorkflowFileName(): string {
+  const ref = process.env.GITHUB_WORKFLOW_REF;
+  if (ref) {
+    const m = ref.match(/\/\.github\/workflows\/([^@]+)@/);
+    if (m && m[1]) return m[1];
+  }
+  return process.env.GITHUB_WORKFLOW || context.workflow || "unknown";
+}
+
+function ensureTfsoEnv(envVars: Record<string, string>, repository: string) {
+  const owner = context.repo.owner;
+  const tfsoRepo = `${owner}/${repository}`;
+
+  if (envVars.TFSO_REPOSITORY === undefined) {
+    envVars.TFSO_REPOSITORY = tfsoRepo;
+  }
+  if (envVars.TFSO_WORKFLOW === undefined) {
+    envVars.TFSO_WORKFLOW = getWorkflowFileName();
+  }
+}
+
 const run = async () => {
   console.log("Running rancher2 deployment");
   const token = core.getInput("deployment_token");
@@ -75,6 +96,8 @@ const run = async () => {
   const containerPortString = core.getInput("container-port");
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const repository = core.getInput("repository") || context.repo.repo;
+  ensureTfsoEnv(envVariables, repository);
+
   const proxyBufferSize = core.getInput("proxy-buffer-size");
   const proxyBodySize = core.getInput("proxy-body-size");
   const readinessProbe = getProbeConfiguration(core, "readytest");

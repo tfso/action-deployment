@@ -103,9 +103,6 @@ inputs:
   cors-allowed-origins:
     required: false
     description: "Comma separated list of allowed cross-origin URLs"
-  repository:
-    required: false
-    description: "Github repository name, defaults to the current repository if not set"
     
 runs:
   using: 'node16'
