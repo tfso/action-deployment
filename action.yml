@@ -105,6 +105,7 @@ inputs:
     description: "Comma separated list of allowed cross-origin URLs"
   singleton: 
     required: false
+    default: false
     description: "(boolean) Whether the service should be a singleton - only one instance allowed"
 
 runs:
