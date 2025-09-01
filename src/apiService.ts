@@ -94,6 +94,8 @@ export const deploy = async (authToken: string, deployment: Deployment) => {
       secrets: deployment.secrets,
       resources: deployment.resources,
       corsSettings: deployment.corsSettings,
+      workloadAnnotations: deployment.workloadAnnotations,
+      workloadLabels: deployment.workloadLabels,
     },
     null,
     2

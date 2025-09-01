@@ -103,7 +103,10 @@ inputs:
   cors-allowed-origins:
     required: false
     description: "Comma separated list of allowed cross-origin URLs"
-    
+  singleton: 
+    required: false
+    description: "(boolean) Whether the service should be a singleton - only one instance allowed"
+
 runs:
   using: 'node16'
   main: 'dist/deploy/index.js'

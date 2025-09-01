@@ -64,6 +64,8 @@ export type Deployment = {
   resources: Resources;
   corsSettings: CorsSettings;
   repository?: string;
+  workloadAnnotations: Record<string, string>;
+  workloadLabels: Record<string, string>;
 };
 
 export type CorsSettings = {
