@@ -181,7 +181,7 @@ const run = async () => {
     },
     workloadLabels: {
       "api.24sevenoffice.com/singleton": isSingleton ? "true" : "false",
-      "api.24sevenoffice.com/repository": TFSO_REPOSITORY,
+      "api.24sevenoffice.com/repository": repository,
       "api.24sevenoffice.com/team": team,
       "api.24sevenoffice.com/module": module,
       "app.kubernetes.io/instance": serviceName,
