@@ -107,6 +107,9 @@ const run = async () => {
   const httpEndpoint = core.getInput("http-endpoint") || undefined;
   const owner = context.repo.owner;
   const repository = context.repo.repo;
+  const isSingleton = core.getBooleanInput("singleton");
+  const team = core.getInput("team");
+  const module = core.getInput("module");
   const TFSO_REPOSITORY = getRepo(repository);
   const DD_GIT_COMMIT_SHA = getCommitSha();
   const DD_GIT_REPOSITORY_URL = getRepoUrl(owner, repository);
@@ -156,8 +159,8 @@ const run = async () => {
     environmentVariables: envVariables,
     containerPort: containerPort,
     httpEndpoint: httpEndpoint,
-    module: core.getInput("module"),
-    team: core.getInput("team"),
+    module,
+    team,
     readinessProbe,
     livenessProbe,
     volumes,
@@ -172,6 +175,22 @@ const run = async () => {
     resources,
     corsSettings: {
       allowedOrigins,
+    },
+    workloadAnnotations: {
+      "api.24sevenoffice.com/commit": DD_GIT_COMMIT_SHA
+    },
+    workloadLabels: {
+      "api.24sevenoffice.com/singleton": isSingleton ? "true" : "false",
+      "api.24sevenoffice.com/repository": TFSO_REPOSITORY,
+      "api.24sevenoffice.com/team": team,
+      "api.24sevenoffice.com/module": module,
+      "app.kubernetes.io/instance": serviceName,
+      "app.kubernetes.io/name": serviceName,
+      "app.kubernetes.io/version": version,
+      "app.kubernetes.io/managed-by": "api-deployment",
+      "app.kubernetes.io/component": type === 'website' ? "frontend" : "backend",
+      "app.kubernetes.io/part-of": module,
+
     },
   };
   console.log(JSON.stringify(deployParams));
