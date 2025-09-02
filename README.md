@@ -45,16 +45,16 @@ jobs:
         with:
           type: rancher2
           service_name:  tfso.api.example
-          image_name: tfso/example-api
-          version: v0.0.1
+          image_name: tfso/api-project-2
+          version: v1.0.177
           dd-service: example.24sevenoffice.com
-          team: "aws"
-          module: "deployment"
+          team: "awsome"
+          module: "example"
           deployment_token: ${{ secrets.DEPLOYMENT_API_TOKEN }}
-          environment: beta
+          environment: dev
           instances: 1
-          container-port: 80
-          http-endpoint: example.api2.24sevenoffice.com
+          container-port: 3000
+          http-endpoint: example.api.24so.io
           healthtest-path: /healthz
           readytest-path: /healthz
         env:

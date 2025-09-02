@@ -178,6 +178,8 @@ const run = async () => {
     },
     workloadAnnotations: {
       "api.24sevenoffice.com/commit": DD_GIT_COMMIT_SHA,
+      "api.24sevenoffice.com/deployed-time": new Date().toISOString(),
+      "api.24sevenoffice.com/repository": TFSO_REPOSITORY,
     },
     workloadLabels: {
       "api.24sevenoffice.com/singleton": isSingleton ? "true" : "false",
@@ -186,7 +188,6 @@ const run = async () => {
       "api.24sevenoffice.com/team": team,
       "api.24sevenoffice.com/module": module,
       "api.24sevenoffice.com/deployed-by": deployerName,
-      "api.24sevenoffice.com/deployed-time": new Date().toISOString(),
       "app.kubernetes.io/instance": serviceName,
       "app.kubernetes.io/name": serviceName,
       "app.kubernetes.io/version": version,
