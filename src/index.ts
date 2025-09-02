@@ -113,7 +113,7 @@ const run = async () => {
   const TFSO_REPOSITORY = getRepo(repository);
   const DD_GIT_COMMIT_SHA = getCommitSha();
   const DD_GIT_REPOSITORY_URL = getRepoUrl(owner, repository);
-  const TFSO_WORKFLOW_FILE = getWorkflowFile(); 
+  const TFSO_WORKFLOW_FILE = getWorkflowFile();
     const envVariables = {
     ...getEnvironmentVariables(process.env),
     TFSO_REPOSITORY,
@@ -177,17 +177,18 @@ const run = async () => {
       allowedOrigins,
     },
     workloadAnnotations: {
-      "api.24sevenoffice.com/commit": DD_GIT_COMMIT_SHA,
+      "api.24sevenoffice.com/deployed-by": deployerName,
       "api.24sevenoffice.com/deployed-time": new Date().toISOString(),
       "api.24sevenoffice.com/repository": TFSO_REPOSITORY,
+      "api.24sevenoffice.com/commit": DD_GIT_COMMIT_SHA,
     },
     workloadLabels: {
       "api.24sevenoffice.com/singleton": isSingleton ? "true" : "false",
+      // "api.24sevenoffice.com/deployed-by": deployerName,
       "api.24sevenoffice.com/repository": repository,
       "api.24sevenoffice.com/repository-workflow-file": TFSO_WORKFLOW_FILE,
       "api.24sevenoffice.com/team": team,
       "api.24sevenoffice.com/module": module,
-      "api.24sevenoffice.com/deployed-by": deployerName,
       "app.kubernetes.io/instance": serviceName,
       "app.kubernetes.io/name": serviceName,
       "app.kubernetes.io/version": version,
